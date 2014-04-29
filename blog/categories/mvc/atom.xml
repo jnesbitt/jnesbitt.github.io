@@ -4,7 +4,7 @@
   <title><![CDATA[Category: MVC | Compile Jason]]></title>
   <link href="http://compilejason.com/blog/categories/mvc/atom.xml" rel="self"/>
   <link href="http://compilejason.com/"/>
-  <updated>2014-04-28T21:50:00-04:00</updated>
+  <updated>2014-04-29T08:56:32-04:00</updated>
   <id>http://compilejason.com/</id>
   <author>
     <name><![CDATA[Jason Nesbitt]]></name>
@@ -30,7 +30,7 @@ Client: "Oh NOW it's working!"
 
 
 <p>
-Had that conversation before? Like one hundred, or one thousand times?  Enough of that.  Trick that there ol' browser to download new JavaScript and Stylesheets after every new deployment and have it cache them until the next one.  All you have to do is change the file names every time.  Nope, that's not something manual you'll have to remember to do.  If you're a .NET developer, make use of MSBuld to do that.  While you're at it, have it minify and combine your resources so that you have one optimized JavaScipt file and one optimized Stylesheet.  All you need is a few additional build tasks that don't come out of the box with Visual Studio.  Grab <a href="http://ajaxmin.codeplex.com/">Mincrosoft Ajax Minifier</a> and the <a href="https://msbuildextensionpack.codeplex.com/" target="_blank">MSBuild Extension Pack</a>.  If your not a .NET developer then I bet there's a similar way to do this in your own language.
+Had that conversation before? Like one hundred, or one thousand times?  Enough of that.  Trick that there ol' browser to download new JavaScript and Stylesheets after every new deployment and have it cache them until the next one.  All you have to do is use a different file name for each deployment.  Nope, that's not something manual you'll have to remember to do.  If you're a .NET developer, make use of MSBuld to do that and make it automatic.  While you're at it, have it minify and combine your resources so that you have one optimized JavaScipt file and one optimized Stylesheet.  All you need is a few additional build tasks that don't come out of the box with Visual Studio.  Grab <a href="http://ajaxmin.codeplex.com/">Mincrosoft Ajax Minifier</a> and the <a href="https://msbuildextensionpack.codeplex.com/" target="_blank">MSBuild Extension Pack</a>.  If your not a .NET developer then I bet there's a similar way to do this in your own language.
 </p>
 
 
@@ -428,7 +428,7 @@ That works but my front end guys aren't going to like trying to debug the minifi
 </span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
 <p>
-Then of course I reference these static properties in the layout like the following.
+Then, because these static properties output full link and script tags, we can output them in our layout with the following simple razor syntax.
 </p>
 
 
@@ -438,14 +438,10 @@ Then of course I reference these static properties in the layout like the follow
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
 <span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
 </pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;/p&gt;</span>
 </span><span class='line'>
-</span><span class='line'><span class="nt">&lt;p&gt;&lt;link</span> <span class="na">href=</span><span class="s">/Content/combined.@(WebResources.CssFiles).min.css</span> <span class="na">rel=</span><span class="s">&quot;stylesheet&quot;</span> <span class="nt">/&gt;&lt;/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="nt">&lt;script </span><span class="na">type=</span><span class="s">&quot;text/JavaScipt&quot;</span> <span class="na">src=</span><span class="s">&quot;http://compilejason.com/Scripts/combined.@(WebResources.Javascripts).min.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
-</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;p&gt;</span>@WebResources.CssFiles
+</span><span class='line'>@WebResources.Javascripts<span class="nt">&lt;/p&gt;</span>
 </span><span class='line'>
 </span><span class='line'><span class="nt">&lt;p&gt;</span>
 </span></code></pre></td></tr></table></div></figure></notextile></div></p>

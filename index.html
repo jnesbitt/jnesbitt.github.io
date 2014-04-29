@@ -107,7 +107,7 @@ Client: &#8220;Oh NOW it&#8217;s working!&#8221;
 
 
 <p>
-Had that conversation before? Like one hundred, or one thousand times?  Enough of that.  Trick that there ol&#8217; browser to download new JavaScript and Stylesheets after every new deployment and have it cache them until the next one.  All you have to do is change the file names every time.  Nope, that&#8217;s not something manual you&#8217;ll have to remember to do.  If you&#8217;re a .NET developer, make use of MSBuld to do that.  While you&#8217;re at it, have it minify and combine your resources so that you have one optimized JavaScipt file and one optimized Stylesheet.  All you need is a few additional build tasks that don&#8217;t come out of the box with Visual Studio.  Grab <a href="http://ajaxmin.codeplex.com/">Mincrosoft Ajax Minifier</a> and the <a href="https://msbuildextensionpack.codeplex.com/" target="_blank">MSBuild Extension Pack</a>.  If your not a .NET developer then I bet there&#8217;s a similar way to do this in your own language.
+Had that conversation before? Like one hundred, or one thousand times?  Enough of that.  Trick that there ol&#8217; browser to download new JavaScript and Stylesheets after every new deployment and have it cache them until the next one.  All you have to do is use a different file name for each deployment.  Nope, that&#8217;s not something manual you&#8217;ll have to remember to do.  If you&#8217;re a .NET developer, make use of MSBuld to do that and make it automatic.  While you&#8217;re at it, have it minify and combine your resources so that you have one optimized JavaScipt file and one optimized Stylesheet.  All you need is a few additional build tasks that don&#8217;t come out of the box with Visual Studio.  Grab <a href="http://ajaxmin.codeplex.com/">Mincrosoft Ajax Minifier</a> and the <a href="https://msbuildextensionpack.codeplex.com/" target="_blank">MSBuild Extension Pack</a>.  If your not a .NET developer then I bet there&#8217;s a similar way to do this in your own language.
 </p>
 
 
@@ -500,7 +500,7 @@ That works but my front end guys aren&#8217;t going to like trying to debug the 
 
 
 <p>
-Then of course I reference these static properties in the layout like the following.
+Then, because these static properties output full link and script tags, we can output them in our layout with the following simple razor syntax.
 </p>
 
 
@@ -512,8 +512,8 @@ Then of course I reference these static properties in the layout like the follow
 <span class='line-number'>4</span>
 </pre></td><td class='code'><pre><code class='html'><span class='line'>
 </span><span class='line'>
-</span><span class='line'><span class="nt">&lt;link</span> <span class="na">href=</span><span class="s">/Content/combined.@(WebResources.CssFiles).min.css</span> <span class="na">rel=</span><span class="s">&quot;stylesheet&quot;</span> <span class="nt">/&gt;</span>
-</span><span class='line'><span class="nt">&lt;script </span><span class="na">type=</span><span class="s">&quot;text/JavaScipt&quot;</span> <span class="na">src=</span><span class="s">&quot;/Scripts/combined.@(WebResources.Javascripts).min.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+</span><span class='line'>@WebResources.CssFiles
+</span><span class='line'>@WebResources.Javascripts
 </span></code></pre></td></tr></table></div></figure>
 
 
