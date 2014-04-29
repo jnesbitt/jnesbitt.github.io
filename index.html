@@ -5,11 +5,12 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>My Octopress Blog</title>
-  <meta name="author" content="Your Name">
+  <title>Compile Jason</title>
+  <meta name="author" content="Jason Nesbitt">
 
   
-  <meta name="description" content=" Blog Archives Recent Posts ">
+  <meta name="description" content="Client: &#8220;It&#8217;s still not working for me.&#8221; You: &#8220;Hmm. Have you tried clearing your cache?&#8221;
+Client: &#8220;How do I do &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,10 +19,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://jnesbitt.github.io">
+  <link rel="canonical" href="http://compilejason.com">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
-  <link href="/atom.xml" rel="alternate" title="My Octopress Blog" type="application/atom+xml">
+  <link href="/atom.xml" rel="alternate" title="Compile Jason" type="application/atom+xml">
   <script src="/javascripts/modernizr-2.0.js"></script>
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
   <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
@@ -36,9 +37,9 @@
 
 <body   >
   <header role="banner"><hgroup>
-  <h1><a href="/">My Octopress Blog</a></h1>
+  <h1><a href="/">Compile Jason</a></h1>
   
-    <h2>A blogging framework for hackers.</h2>
+    <h2>And hope that it works</h2>
   
 </hgroup>
 
@@ -50,7 +51,7 @@
   
 <form action="https://www.google.com/search" method="get">
   <fieldset role="search">
-    <input type="hidden" name="q" value="site:jnesbitt.github.io" />
+    <input type="hidden" name="q" value="site:compilejason.com" />
     <input class="search" type="text" name="q" results="0" placeholder="Search"/>
   </fieldset>
 </form>
@@ -66,6 +67,474 @@
       <div class="blog-index">
   
   
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/04/28/never-worry-about-browser-caching-again/">Never Worry About Browser Caching Again</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-04-28T12:54:26-04:00" pubdate data-updated="true">Apr 28<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><blockquote>
+Client: &#8220;It&#8217;s still not working for me.&#8221; <br />
+You: &#8220;Hmm.  Have you tried clearing your cache?&#8221;<br />
+Client: &#8220;How do I do that?&#8221;<br />
+You: &#8220;What browser are you using?&#8221;<br />
+Client: &#8220;Blah blah blah&#8221;<br />
+You: &#8220;Blah blah blah&#8221;<br />
+Client: &#8220;Oh NOW it&#8217;s working!&#8221;
+</blockquote>
+
+
+<p>
+Had that conversation before? Like one hundred, or one thousand times?  Enough of that.  Trick that there ol&#8217; browser to download new JavaScript and Stylesheets after every new deployment and have it cache them until the next one.  All you have to do is change the file names every time.  Nope, that&#8217;s not something manual you&#8217;ll have to remember to do.  If you&#8217;re a .NET developer, make use of MSBuld to do that.  While you&#8217;re at it, have it minify and combine your resources so that you have one optimized JavaScipt file and one optimized Stylesheet.  All you need is a few additional build tasks that don&#8217;t come out of the box with Visual Studio.  Grab <a href="http://ajaxmin.codeplex.com/">Mincrosoft Ajax Minifier</a> and the <a href="https://msbuildextensionpack.codeplex.com/" target="_blank">MSBuild Extension Pack</a>.  If your not a .NET developer then I bet there&#8217;s a similar way to do this in your own language.
+</p>
+
+
+
+
+<p>
+    Once you&#8217;ve got that installed, unload your project in Visual Studio so that you can edit the project file.  Down at the bottom of it, just before the closing &lt;/Project&gt; tag, add the following target:
+</p>
+
+
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'>
+</span><span class='line'><span class="nt">&lt;Target</span> <span class="na">Name=</span><span class="s">&quot;BeforeBuild&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'><span class="nt">&lt;ItemGroup&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;GeneratedCSSJS</span> <span class="na">Include=</span><span class="s">&quot;Content/combined.*.css&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;GeneratedCSSJS</span> <span class="na">Include=</span><span class="s">&quot;Scripts/combined.*.js&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'><span class="nt">&lt;/ItemGroup&gt;</span>
+</span><span class='line'><span class="nt">&lt;Delete</span> <span class="na">Files=</span><span class="s">&quot;@(GeneratedCSSJS)&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'><span class="nt">&lt;/Target&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<p>
+This is going to do cleanup from previous builds.  Otherwise we&#8217;d end up with two new files after each build.  
+</p>
+
+
+
+
+<p>Next we are going to add another Target named AfterBuild.  This is going to contain the meat and potatoes. The following code snippets will all go inside this element.</p>
+
+
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'>
+</span><span class='line'><span class="nt">&lt;Target</span> <span class="na">Name=</span><span class="s">&quot;AfterBuild&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>      This is where the rest of our work is going to go.
+</span><span class='line'><span class="nt">&lt;/Target&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p> <p>
+We&rsquo;re going to be using the assembly version number in our file names so that they change in a predictable way on each build.  This is how the style and script references in our HTML will know what file name to refer to.  It&rsquo;s possible that a deployment might not include any code changes, and to ensure we get a new assembly version number we need to force a compile on each build.  We do that by creating a dummy .cs file in our project and <em>touch</em> it to force a re-compile.<br/>
+ </p></p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'>
+</span><span class='line'><span class="nt">&lt;Exec</span> <span class="na">Command=</span><span class="s">&quot;ATTRIB -R Build.cs&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'><span class="nt">&lt;Touch</span> <span class="na">Files=</span><span class="s">&quot;Build.cs&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'><span class="nt">&lt;Exec</span> <span class="na">Command=</span><span class="s">&quot;ATTRIB +R Build.cs&quot;</span> <span class="nt">/&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<p>Next we&#8217;ll use a task from the extension pack to get at the assembly info.</p>
+
+
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'>
+</span><span class='line'><span class="nt">&lt;MSBuild.ExtensionPack.Framework.Assembly</span> <span class="na">TaskAction=</span><span class="s">&quot;GetInfo&quot;</span> <span class="na">NetAssembly=</span><span class="s">&quot;$(OutputPath)\MyAssembly.dll&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;Output</span> <span class="na">TaskParameter=</span><span class="s">&quot;OutputItems&quot;</span> <span class="na">ItemName=</span><span class="s">&quot;Info&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'><span class="nt">&lt;/MSBuild.ExtensionPack.Framework.Assembly&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<p>
+Now we&#8217;ll declare which files we want to minify and concatenate. 
+</p>
+
+
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'>
+</span><span class='line'><span class="nt">&lt;ItemGroup&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;CSSMin</span> <span class="na">Include=</span><span class="s">&quot;Content/main.css&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;CSSMin</span> <span class="na">Include=</span><span class="s">&quot;Content/additional.css&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'><span class="nt">&lt;/ItemGroup&gt;</span>
+</span><span class='line'><span class="nt">&lt;ItemGroup&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;CSSCat</span> <span class="na">Include=</span><span class="s">&quot;Content/main.css&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;CSSCat</span> <span class="na">Include=</span><span class="s">&quot;Content/additional.css&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'><span class="nt">&lt;/ItemGroup&gt;</span>
+</span><span class='line'><span class="nt">&lt;ItemGroup&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;JSMin</span> <span class="na">Include=</span><span class="s">&quot;Scripts\global.js&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;JSMin</span> <span class="na">Include=</span><span class="s">&quot;Scripts\additional.js&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'><span class="nt">&lt;/ItemGroup&gt;</span>
+</span><span class='line'><span class="nt">&lt;ItemGroup&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;JSCat</span> <span class="na">Include=</span><span class="s">&quot;Scripts\global.js&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;JSCat</span> <span class="na">Include=</span><span class="s">&quot;Scripts\additional.js&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'><span class="nt">&lt;/ItemGroup&gt;</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p> <p>
+Now minify, combine, and write to a single css and js file, including the assembly version in the file name.
+ </p></p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'>
+</span><span class='line'><span class="nt">&lt;AjaxMin</span> <span class="na">JsSourceFiles=</span><span class="s">&quot;@(JSMin)&quot;</span> <span class="na">JsSourceExtensionPattern=</span><span class="s">&quot;\.js$&quot;</span> <span class="na">JsTargetExtension=</span><span class="s">&quot;.min.js&quot;</span> <span class="na">CssSourceFiles=</span><span class="s">&quot;@(CSSMin)&quot;</span> <span class="na">CssSourceExtensionPattern=</span><span class="s">&quot;\.css$&quot;</span> <span class="na">CssTargetExtension=</span><span class="s">&quot;.min.css&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;ReadLinesFromFile</span> <span class="na">File=</span><span class="s">&quot;%(JSCat.Identity)&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;Output</span> <span class="na">TaskParameter=</span><span class="s">&quot;Lines&quot;</span> <span class="na">ItemName=</span><span class="s">&quot;JSLines&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'><span class="nt">&lt;/ReadLinesFromFile&gt;</span>
+</span><span class='line'><span class="nt">&lt;WriteLinesToFile</span> <span class="na">File=</span><span class="s">&quot;Scripts/combined.%(Info.AssemblyVersion).min.js&quot;</span> <span class="na">Lines=</span><span class="s">&quot;@(JSLines)&quot;</span> <span class="na">Overwrite=</span><span class="s">&quot;true&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'><span class="nt">&lt;ReadLinesFromFile</span> <span class="na">File=</span><span class="s">&quot;%(CSSCat.Identity)&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;Output</span> <span class="na">TaskParameter=</span><span class="s">&quot;Lines&quot;</span> <span class="na">ItemName=</span><span class="s">&quot;CSSLines&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'><span class="nt">&lt;/ReadLinesFromFile&gt;</span>
+</span><span class='line'><span class="nt">&lt;WriteLinesToFile</span> <span class="na">File=</span><span class="s">&quot;Content/combined.%(Info.AssemblyVersion).min.css&quot;</span> <span class="na">Lines=</span><span class="s">&quot;@(CSSLines)&quot;</span> <span class="na">Overwrite=</span><span class="s">&quot;true&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>
+</span><span class='line'>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p> <p>
+Lastly, let&rsquo;s declare the resulting files as part of the project in case we are using Visual Studio&rsquo;s publishing feature.
+ </p></p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'>
+</span><span class='line'><span class="nt">&lt;ItemGroup&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;Content</span> <span class="na">Include=</span><span class="s">&quot;Scripts/combined.%(Info.AssemblyVersion).min.js&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;Content</span> <span class="na">Include=</span><span class="s">&quot;Content/combined.%(Info.AssemblyVersion).min.css&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'><span class="nt">&lt;/ItemGroup&gt;</span>
+</span><span class='line'>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<p>
+There&#8217;s one more part of this.  We&#8217;ll need to dynamically reference these files from our views.  The more simple way to do this would be to go into our layout file and add some references like the following:
+</p>
+
+
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'>
+</span><span class='line'> {
+</span><span class='line'>   var version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+</span><span class='line'> }
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;link</span> <span class="na">href=</span><span class="s">/Content/combined.@(version).min.css</span> <span class="na">rel=</span><span class="s">&quot;stylesheet&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'><span class="nt">&lt;script </span><span class="na">type=</span><span class="s">&quot;text/JavaScipt&quot;</span> <span class="na">src=</span><span class="s">&quot;/Scripts/combined.@(version).min.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<p>
+That works but my front end guys aren&#8217;t going to like trying to debug the minified and combined files.  I like to add an additional step so that this optimization isn&#8217;t used in our development environments.  We can do this by referring to the original unminified files when the DEBUG constant is defined.  I generally like to create a class for this so as to keep my layout clean.  Just in case I need to debug in production I make this work when a <em>debug</em> query parameter is present as well.  The following C# class is an example of how I do this:
+</p>
+
+
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+</pre></td><td class='code'><pre><code class='csharp'><span class='line'>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">public</span> <span class="k">static</span> <span class="k">class</span> <span class="nc">WebResources</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">private</span> <span class="k">static</span> <span class="k">readonly</span> <span class="kt">string</span> <span class="n">ExpandedScripts</span><span class="p">;</span>
+</span><span class='line'>        <span class="k">private</span> <span class="k">static</span> <span class="k">readonly</span> <span class="kt">string</span> <span class="n">CompressedScripts</span><span class="p">;</span>
+</span><span class='line'>        <span class="k">private</span> <span class="k">static</span> <span class="k">readonly</span> <span class="kt">string</span> <span class="n">ExpandedCssFiles</span><span class="p">;</span>
+</span><span class='line'>        <span class="k">private</span> <span class="k">static</span> <span class="k">readonly</span> <span class="kt">string</span> <span class="n">CompressedCssFiles</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">static</span> <span class="nf">WebResources</span><span class="p">()</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="kt">var</span> <span class="n">expandedScriptsBuilder</span> <span class="p">=</span> <span class="k">new</span> <span class="n">StringBuilder</span><span class="p">();</span>
+</span><span class='line'>            <span class="n">expandedScriptsBuilder</span><span class="p">.</span><span class="n">AppendLine</span><span class="p">(</span><span class="n">ScriptTag</span><span class="p">(</span><span class="s">&quot;/Scripts/global.js&quot;</span><span class="p">));</span>
+</span><span class='line'>            <span class="n">expandedScriptsBuilder</span><span class="p">.</span><span class="n">AppendLine</span><span class="p">(</span><span class="n">ScriptTag</span><span class="p">(</span><span class="s">&quot;/Scripts/additionaljs&quot;</span><span class="p">));</span>
+</span><span class='line'>            <span class="n">ExpandedScripts</span> <span class="p">=</span> <span class="n">expandedScriptsBuilder</span><span class="p">.</span><span class="n">ToString</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="n">ExpandedCssFiles</span> <span class="p">=</span> <span class="n">CssLink</span><span class="p">(</span><span class="s">&quot;/Content/main.css&quot;</span><span class="p">)</span> <span class="p">+</span> <span class="n">CssLink</span><span class="p">(</span><span class="s">&quot;/Content/additional.css&quot;</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="kt">var</span> <span class="n">version</span> <span class="p">=</span> <span class="n">Assembly</span><span class="p">.</span><span class="n">GetExecutingAssembly</span><span class="p">().</span><span class="n">GetName</span><span class="p">().</span><span class="n">Version</span><span class="p">.</span><span class="n">ToString</span><span class="p">();</span>
+</span><span class='line'>            <span class="n">CompressedCssFiles</span> <span class="p">=</span> <span class="n">CssLink</span><span class="p">(</span><span class="kt">string</span><span class="p">.</span><span class="n">Format</span><span class="p">(</span><span class="s">&quot;/Content/combined.{0}.min.css&quot;</span><span class="p">,</span> <span class="n">version</span><span class="p">));</span>
+</span><span class='line'>            <span class="n">CompressedScripts</span> <span class="p">=</span> <span class="n">ScriptTag</span><span class="p">(</span><span class="kt">string</span><span class="p">.</span><span class="n">Format</span><span class="p">(</span><span class="s">&quot;/Scripts/combined.{0}.min.js&quot;</span><span class="p">,</span> <span class="n">version</span><span class="p">));</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">public</span> <span class="k">static</span> <span class="kt">string</span> <span class="n">JavaScripts</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="k">get</span>
+</span><span class='line'>            <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>                <span class="k">if</span> <span class="p">(</span><span class="n">IsDebugMode</span><span class="p">)</span>
+</span><span class='line'>                <span class="p">{</span>
+</span><span class='line'>                    <span class="k">return</span> <span class="n">ExpandedScripts</span><span class="p">;</span>
+</span><span class='line'>                <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#if DEBUG</span>
+</span><span class='line'>                <span class="k">return</span> <span class="n">ExpandedScripts</span><span class="p">;</span>
+</span><span class='line'><span class="cp">#else</span>
+</span><span class='line'>                <span class="k">return</span> <span class="n">CompressedScripts</span><span class="p">;</span>
+</span><span class='line'><span class="cp">#endif</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">public</span> <span class="k">static</span> <span class="kt">string</span> <span class="n">CssFiles</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="k">get</span>
+</span><span class='line'>            <span class="p">{</span>
+</span><span class='line'><span class="cp">#if DEBUG</span>
+</span><span class='line'>                <span class="k">return</span> <span class="n">ExpandedCssFiles</span><span class="p">;</span>
+</span><span class='line'><span class="cp">#else</span>
+</span><span class='line'>                <span class="k">return</span> <span class="n">IsDebugMode</span> <span class="p">?</span> <span class="n">ExpandedCssFiles</span> <span class="p">:</span> <span class="n">CompressedCssFiles</span><span class="p">;</span>
+</span><span class='line'><span class="cp">#endif</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">private</span> <span class="k">static</span> <span class="kt">string</span> <span class="nf">ScriptTag</span><span class="p">(</span><span class="kt">string</span> <span class="n">url</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="k">return</span> <span class="kt">string</span><span class="p">.</span><span class="n">Format</span><span class="p">(</span><span class="s">&quot;&lt;script src=\&quot;{0}\&quot;&gt;&lt;/script&gt;&quot;</span><span class="p">,</span> <span class="n">url</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">private</span> <span class="k">static</span> <span class="kt">string</span> <span class="nf">CssLink</span><span class="p">(</span><span class="kt">string</span> <span class="n">url</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="k">return</span> <span class="kt">string</span><span class="p">.</span><span class="n">Format</span><span class="p">(</span><span class="s">&quot;&lt;link href=\&quot;{0}\&quot; rel=\&quot;stylesheet\&quot;/&gt;&quot;</span><span class="p">,</span> <span class="n">url</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">private</span> <span class="k">static</span> <span class="kt">bool</span> <span class="n">IsDebugMode</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="k">get</span>
+</span><span class='line'>            <span class="p">{</span>
+</span><span class='line'>                <span class="k">return</span> <span class="n">HttpContext</span><span class="p">.</span><span class="n">Current</span><span class="p">.</span><span class="n">Request</span><span class="p">.</span><span class="n">QueryString</span><span class="p">[</span><span class="s">&quot;debug&quot;</span><span class="p">]</span> <span class="p">==</span> <span class="s">&quot;true&quot;</span><span class="p">;</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<p>
+Then of course I reference these static properties in the layout like the following.
+</p>
+
+
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;link</span> <span class="na">href=</span><span class="s">/Content/combined.@(WebResources.CssFiles).min.css</span> <span class="na">rel=</span><span class="s">&quot;stylesheet&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'><span class="nt">&lt;script </span><span class="na">type=</span><span class="s">&quot;text/JavaScipt&quot;</span> <span class="na">src=</span><span class="s">&quot;/Scripts/combined.@(WebResources.Javascripts).min.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<p>
+What&#8217;s beautiful about this is that we can configure the web server to tell the browsers to cache until their hearts are content.  They&#8217;ll download the resource files exactly once until the next deployment occurs.
+</p>
+
+
+<p>
+Oh, one other thing I wanted to mention.  Some of you might say <em>I handle this problem myself by just adding a dynamic query parameter to the script or style reference</em>. This is certainly a shortcut that I&#8217;ve seen in practice but it doesn&#8217;t always work because some browsers don&#8217;t respect query parameters in Stylesheet and JavaScript references.  In some instances I&#8217;ve seen random numbers appended as query parameters on each page request, but if that succeeds in forcing a download, it&#8217;s inefficient because the browser will download the file over and over on each page view.
+</p>
+
+</div>
+  
+  
+
+
+    </article>
+  
   <div class="pagination">
     
     <a href="/blog/archives">Blog Archives</a>
@@ -77,6 +546,10 @@
     <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/04/28/never-worry-about-browser-caching-again/">Never Worry About Browser Caching Again</a>
+      </li>
     
   </ul>
 </section>
@@ -91,7 +564,7 @@
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2014 - Your Name -
+  Copyright &copy; 2014 - Jason Nesbitt -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 

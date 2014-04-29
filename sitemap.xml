@@ -1,15 +1,21 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
     <url>
-        <loc>http://jnesbitt.github.io/blog/archives/</loc>
-        <lastmod>2014-04-25T13:02:57-04:00</lastmod>
+        <loc>
+            http://compilejason.com/blog/2014/04/28/never-worry-about-browser-caching-again/
+        </loc>
+        <lastmod>2014-04-28T18:34:11-04:00</lastmod>
     </url>
     <url>
-        <loc>http://jnesbitt.github.io/</loc>
-        <lastmod>2014-04-25T13:02:57-04:00</lastmod>
+        <loc>http://compilejason.com/blog/archives/</loc>
+        <lastmod>2014-04-28T18:34:11-04:00</lastmod>
     </url>
     <url>
-        <loc>http://jnesbitt.github.io/robots.txt</loc>
+        <loc>http://compilejason.com/</loc>
+        <lastmod>2014-04-28T18:34:11-04:00</lastmod>
+    </url>
+    <url>
+        <loc>http://compilejason.com/robots.txt</loc>
         <lastmod>2014-04-25T13:02:57-04:00</lastmod>
     </url>
 </urlset>
